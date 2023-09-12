@@ -10,10 +10,6 @@ const anilist = new META.Anilist();
 
 app.use(cors());
 
-app.use("/", (req, res) => {
-  res.send("Server is running!");
-});
-
 /*--------------------Get Trending Anime-----------------------*/
 app.get("/api/trending", async (req, res) => {
   try {
@@ -66,6 +62,10 @@ app.get("/api/episode", async (req, res) => {
       .status(500)
       .json({ error: "Error fetching data from the external API" });
   }
+});
+
+app.use("/", (req, res) => {
+  res.send("<p>Server is running!</p>");
 });
 
 app.listen(port, () => {
