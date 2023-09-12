@@ -64,9 +64,9 @@ app.get("/api/episode", async (req, res) => {
   }
 });
 
-app.use("/", (req, res) => {
-  res.send("<p>Server is running!</p>");
-});
+// app.use("/", (req, res) => {
+//   res.send("<p>Server is running!</p>");
+// });
 
 app.listen(port, () => {
   console.log(`Server running in port ${port}...`);
