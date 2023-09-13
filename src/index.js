@@ -1,14 +1,33 @@
 import express from "express";
+import axios from "axios";
 import cors from "cors";
 import { META } from "@consumet/extensions";
+import cron from "node-cron";
 import dotenv from "dotenv";
 dotenv.config({ path: ".env.local" });
 
 const app = express();
 const port = process.env.PORT;
+const url = process.env.URl;
 const anilist = new META.Anilist();
 
 app.use(cors());
+
+app.get("/keep-alive", (req, res) => {
+  res.send("Server Alive");
+});
+
+/*--------------------Keep server alive-----------------------*/
+cron.schedule("*/14 * * * *", () => {
+  axios
+    .get(`${url}/keep-alive`)
+    .then((response) => {
+      console.log(`Keep-alive ping scheduled at ${new Date()}`);
+    })
+    .catch((error) => {
+      console.error(`Error while pinging keep-alive endpoint: ${error}`);
+    });
+});
 
 /*--------------------Get Trending Anime-----------------------*/
 app.get("/api/trending", async (req, res) => {
@@ -63,10 +82,6 @@ app.get("/api/episode", async (req, res) => {
       .json({ error: "Error fetching data from the external API" });
   }
 });
-
-// app.use("/", (req, res) => {
-//   res.send("<p>Server is running!</p>");
-// });
 
 app.listen(port, () => {
   console.log(`Server running in port ${port}...`);
