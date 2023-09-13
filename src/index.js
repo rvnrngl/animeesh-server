@@ -8,7 +8,7 @@ dotenv.config({ path: ".env.local" });
 
 const app = express();
 const port = process.env.PORT;
-const url = process.env.URl;
+const url = process.env.URL;
 const anilist = new META.Anilist();
 
 app.use(cors());
@@ -27,6 +27,10 @@ cron.schedule("*/14 * * * *", () => {
     .catch((error) => {
       console.error(`Error while pinging keep-alive endpoint: ${error}`);
     });
+});
+
+app.get("/", (req, res) => {
+  res.send("Server running!🎉");
 });
 
 /*--------------------Get Trending Anime-----------------------*/
