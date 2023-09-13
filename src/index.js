@@ -10,11 +10,12 @@ const app = express();
 const port = process.env.PORT;
 const url = process.env.URL;
 const anilist = new META.Anilist();
+console.log(url);
 
 app.use(cors());
 
 app.get("/keep-alive", (req, res) => {
-  res.send("Server Alive");
+  res.send("Successfully");
 });
 
 /*--------------------Keep server alive-----------------------*/
@@ -22,7 +23,7 @@ cron.schedule("*/14 * * * *", () => {
   axios
     .get(`${url}/keep-alive`)
     .then((response) => {
-      console.log(`Keep-alive ping scheduled at ${new Date()}`);
+      console.log(`${response.data} pinged! Scheduled at ${new Date()}`);
     })
     .catch((error) => {
       console.error(`Error while pinging keep-alive endpoint: ${error}`);
