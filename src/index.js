@@ -10,7 +10,6 @@ const app = express();
 const port = process.env.PORT;
 const url = process.env.URL;
 const anilist = new META.Anilist();
-console.log(url);
 
 app.use(cors());
 
@@ -18,7 +17,7 @@ app.get("/keep-alive", (req, res) => {
   res.send("Successfully");
 });
 
-/*--------------------Keep server alive-----------------------*/
+/*---------------Schedule cron every 14 mins to keep server alive------------------*/
 cron.schedule("*/14 * * * *", () => {
   axios
     .get(`${url}/keep-alive`)
