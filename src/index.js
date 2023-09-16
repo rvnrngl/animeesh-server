@@ -6,9 +6,10 @@ import cron from "node-cron";
 import dotenv from "dotenv";
 dotenv.config({ path: ".env.local" });
 
+const PORT = process.env.PORT;
+const URL = process.env.URL;
+
 const app = express();
-const port = process.env.PORT;
-const url = process.env.URL;
 const anilist = new META.Anilist();
 
 app.use(cors());
@@ -20,7 +21,7 @@ app.get("/keep-alive", (req, res) => {
 /*---------------Schedule cron every 14 mins to keep server alive------------------*/
 cron.schedule("*/14 * * * *", () => {
   axios
-    .get(`${url}/keep-alive`)
+    .get(`${URL}/keep-alive`)
     .then((response) => {
       console.log(`${response.data} pinged! Scheduled at ${new Date()}`);
     })
@@ -46,16 +47,46 @@ app.get("/api/trending", async (req, res) => {
   }
 });
 
-/*--------------------Get Trending Anime-----------------------*/
+/*--------------------Get Recent Anime-----------------------*/
 app.get("/api/recent", async (req, res) => {
+  const provider = req.query.provider;
+  const pageNumber = req.query.pageNumber;
+  const itemsPerPage = req.query.itemsPerPage;
+
   try {
-    const data = await anilist.fetchRecentEpisodes();
+    const data = await anilist.fetchRecentEpisodes(
+      provider,
+      pageNumber,
+      itemsPerPage
+    );
     res.json(data);
   } catch (error) {
     console.error("Error fetching data:", error);
-    res
-      .status(500)
-      .json({ error: "Error fetching data from the external API" });
+    console.log("Retrying...");
+    // try another approach if not working
+    try {
+      const data = await anilist.advancedSearch(
+        undefined,
+        "ANIME",
+        pageNumber,
+        itemsPerPage,
+        undefined,
+        ["UPDATED_AT_DESC"],
+        undefined,
+        undefined,
+        undefined,
+        "RELEASING",
+        undefined
+      );
+      data.retry = true;
+      res.json(data);
+      console.log("Retry successfull!");
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      res
+        .status(500)
+        .json({ error: "Error fetching data from the external API" });
+    }
   }
 });
 
@@ -87,6 +118,6 @@ app.get("/api/episode", async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Server running in port ${port}...`);
+app.listen(PORT, () => {
+  console.log(`Server running in port ${PORT}...`);
 });
