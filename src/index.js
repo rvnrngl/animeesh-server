@@ -5,15 +5,26 @@ import fs from "fs";
 import { META } from "@consumet/extensions";
 import cron from "node-cron";
 import dotenv from "dotenv";
+import mongoose from "mongoose";
 dotenv.config({ path: ".env.local" });
+
+import { userRouter } from "./routes/users.js";
 
 const PORT = process.env.PORT;
 const URL = process.env.URL;
+const MONGP_DB_PASSWORD = process.env.MONGO_DB_PASSWORD;
 
 const app = express();
 const anilist = new META.Anilist();
 
+app.use(express.json());
 app.use(cors());
+
+app.use("/auth", userRouter);
+
+mongoose.connect(
+  `mongodb+srv://ravenprog17:${MONGP_DB_PASSWORD}@animeesh.aytni4o.mongodb.net/animeesh?retryWrites=true&w=majority`
+);
 
 app.get("/", (req, res) => {
   // Read the contents of the HTML file
@@ -23,11 +34,8 @@ app.get("/", (req, res) => {
       res.status(500).send("Internal Server Error");
       return;
     }
-
-    // Send the HTML content as the response
     res.send(data);
   });
-  // res.send("Server running!🎉");
 });
 
 /*--------------------Get Trending Anime-----------------------*/
