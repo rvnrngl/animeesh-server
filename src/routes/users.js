@@ -29,16 +29,23 @@ router.post("/login", async (req, res) => {
   const { username, password } = req.body;
   const user = await UserModel.findOne({ username });
 
-  if (!user) return res.json({ message: "User doesn't exist!" });
+  if (!user)
+    return res.json({ isSuccess: false, message: "User doesn't exist!" });
 
   const isPasswordValid = await bcrypt.compare(password, user.password);
 
   if (!isPasswordValid) {
-    return res.json({ message: "Password is incorrect!" });
+    return res.json({ isSuccess: false, message: "Password is incorrect!" });
   }
 
   const token = jwt.sign({ id: user._id }, JWT_SECRET_KEY);
-  res.json({ token, userID: user._id });
+  res.json({
+    isSuccess: true,
+    token,
+    userID: user._id,
+    username,
+    message: "Login Successfull!",
+  });
 });
 
 export { router as userRouter };
