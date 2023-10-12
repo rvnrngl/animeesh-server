@@ -8,8 +8,8 @@ import mongoose from "mongoose";
 dotenv.config({ path: ".env.local" });
 
 import { userRouter } from "./routes/users.js";
-import { animesRouter } from "./routes/animes.js";
 import { apiRouter } from "./routes/api.js";
+import { watchListRouter } from "./routes/watch-list.js";
 
 const PORT = process.env.PORT;
 const URL = process.env.URL;
@@ -22,7 +22,7 @@ app.use(cors());
 
 app.use("/auth", userRouter);
 app.use("/api", apiRouter);
-app.use("/watch-list", animesRouter);
+app.use("/watch-list", watchListRouter);
 
 mongoose.connect(
   `mongodb+srv://ravenprog17:${MONGP_DB_PASSWORD}@animeesh.aytni4o.mongodb.net/animeesh?retryWrites=true&w=majority`

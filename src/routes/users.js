@@ -14,8 +14,9 @@ router.post("/register", async (req, res) => {
   const { username, password } = req.body;
   const user = await UserModel.findOne({ username });
 
-  if (user)
+  if (user) {
     return res.json({ isSuccess: false, message: "User already exist!" });
+  }
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -44,7 +45,8 @@ router.post("/login", async (req, res) => {
     isSuccess: true,
     token,
     userID: user._id,
-    username,
+    username: user.username,
+    watchList: user.watchList,
     message: "Login Successfull!",
   });
 });
