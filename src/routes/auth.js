@@ -20,7 +20,16 @@ router.post("/register", async (req, res) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const newUser = new UserModel({ username, password: hashedPassword });
+  const currentDate = new Date();
+  const formattedDate = `${
+    currentDate.getMonth() + 1
+  }-${currentDate.getDate()}-${currentDate.getFullYear()}`;
+
+  const newUser = new UserModel({
+    username,
+    password: hashedPassword,
+    joinDate: formattedDate,
+  });
   await newUser.save();
 
   res.json({ isSuccess: true, message: "User registered successfully" });
@@ -51,4 +60,4 @@ router.post("/login", async (req, res) => {
   });
 });
 
-export { router as userRouter };
+export { router as authRouter };

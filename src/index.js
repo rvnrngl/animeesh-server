@@ -7,9 +7,10 @@ import dotenv from "dotenv";
 import mongoose from "mongoose";
 dotenv.config({ path: ".env.local" });
 
-import { userRouter } from "./routes/users.js";
+import { authRouter } from "./routes/auth.js";
 import { apiRouter } from "./routes/api.js";
 import { watchListRouter } from "./routes/watch-list.js";
+import { userRouter } from "./routes/user.js";
 
 const PORT = process.env.PORT;
 const URL = process.env.URL;
@@ -20,7 +21,8 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.use("/auth", userRouter);
+app.use("/auth", authRouter);
+app.use("/user", userRouter);
 app.use("/api", apiRouter);
 app.use("/watch-list", watchListRouter);
 
