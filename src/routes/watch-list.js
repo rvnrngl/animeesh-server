@@ -15,15 +15,22 @@ router.get("/:userID", async (req, res) => {
 
 /*-------------------------Add anime to User's watchlist----------------------------------*/
 router.put("/add", async (req, res) => {
+  const LIMIT = 10;
   const { userID, animeID, title, currentEpisodeNumber } = req.body;
   try {
     const user = await UserModel.findById(userID);
 
     // check if anime is already in the watchList
     const exists = user.watchList?.some((item) => item.animeID === animeID);
-
     if (exists) {
       return res.json({ message: "Anime already exists." });
+    }
+
+    // if watchList is greater than 10 it no longer add anime to watchlist
+    if (user.watchList.length >= 10) {
+      return res.json({
+        message: "Watchlist Limit Exceeded. Maximum 10 anime allowed.",
+      });
     }
 
     // else it will be added to the watchlist
