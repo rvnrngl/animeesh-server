@@ -1,7 +1,9 @@
 import express from "express";
+import { META } from "@consumet/extensions";
 import { UserModel } from "../models/Users.js";
 
 const router = express.Router();
+const anilist = new META.Anilist();
 
 /*-------------------------Retrieve the User's watchlist----------------------------------*/
 router.get("/:userID", async (req, res) => {
@@ -13,9 +15,31 @@ router.get("/:userID", async (req, res) => {
   }
 });
 
+/*--------------------Retrieve the User's watchlist with its anime info------------------------*/
+router.get("/infos/:userID", async (req, res) => {
+  try {
+    const user = await UserModel.findById(req.params.userID);
+    const userWatchList = user?.watchList;
+
+    if (!userWatchList || userWatchList.length === 0) {
+      // Handle the case where userWatchList is empty or undefined
+      return res.json([]);
+    }
+
+    const animeInfoPromises = userWatchList.map(async (item) => {
+      return anilist.fetchAnimeInfo(item.animeID);
+    });
+
+    const animeList = await Promise.all(animeInfoPromises);
+    res.json(animeList);
+  } catch (error) {
+    res.json(error);
+  }
+});
+
 /*-------------------------Add anime to User's watchlist----------------------------------*/
 router.put("/add", async (req, res) => {
-  const LIMIT = 10;
+  const LIMIT = 5;
   const { userID, animeID, title, currentEpisodeNumber } = req.body;
   try {
     const user = await UserModel.findById(userID);
@@ -27,7 +51,7 @@ router.put("/add", async (req, res) => {
     }
 
     // if watchList is greater than 10 it no longer add anime to watchlist
-    if (user.watchList.length >= 10) {
+    if (user.watchList.length >= LIMIT) {
       return res.json({
         message: "Watchlist Limit Exceeded. Maximum 10 anime allowed.",
       });

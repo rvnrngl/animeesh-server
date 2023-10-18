@@ -31,9 +31,7 @@ router.get("/recent", async (req, res) => {
     );
     res.json(data);
   } catch (error) {
-    console.error("Error fetching data:", error);
     console.log("Retrying...");
-    // try another approach if not working
     try {
       const data = await anilist.advancedSearch(
         undefined,
