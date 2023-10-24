@@ -40,7 +40,7 @@ router.get("/infos/:userID", async (req, res) => {
 /*-------------------------Add anime to User's watchlist----------------------------------*/
 router.put("/add", async (req, res) => {
   const LIMIT = 5;
-  const { userID, animeID, title, currentEpisodeNumber } = req.body;
+  const { userID, animeID, title, image, currentEpisodeNumber } = req.body;
   try {
     const user = await UserModel.findById(userID);
 
@@ -53,12 +53,12 @@ router.put("/add", async (req, res) => {
     // if watchList is greater than 10 it no longer add anime to watchlist
     if (user.watchList.length >= LIMIT) {
       return res.json({
-        message: "Watchlist Limit Exceeded. Maximum 10 anime allowed.",
+        message: "Watchlist Limit Exceeded. Maximum 5 anime allowed.",
       });
     }
 
     // else it will be added to the watchlist
-    user.watchList.push({ animeID, title, currentEpisodeNumber });
+    user.watchList.push({ animeID, title, image, currentEpisodeNumber });
     await user.save();
     res.json({ message: "Anime added to your watchlist!" });
   } catch (error) {

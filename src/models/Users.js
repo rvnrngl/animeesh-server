@@ -8,6 +8,7 @@ const UserSchema = new mongoose.Schema({
     {
       animeID: { type: String, required: true },
       title: { type: String, required: true },
+      image: { type: String },
       currentEpisodeNumber: { type: Number, required: true },
     },
   ],
