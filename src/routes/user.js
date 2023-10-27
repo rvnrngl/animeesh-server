@@ -26,8 +26,7 @@ router.get("/:userID", async (req, res) => {
 /*----------------update username--------------*/
 router.put("/update/username", async (req, res) => {
   const { userID, newUsername } = req.body;
-  console.log(userID);
-  console.log(newUsername);
+
   try {
     const user = await UserModel.findById(userID);
 
@@ -68,8 +67,8 @@ router.put("/update/password", async (req, res) => {
 });
 
 /*----------------Delete User--------------*/
-router.delete("/", async (req, res) => {
-  const { userID } = req.body;
+router.delete("/:userID", async (req, res) => {
+  const userID = req.params.userID;
   try {
     const user = await UserModel.findById(userID);
 

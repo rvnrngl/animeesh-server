@@ -79,7 +79,7 @@ router.put("/update", async (req, res) => {
     });
 
     await user.save();
-    return res.json({ message: "Anime updated in your watchlist!" });
+    return res.json({ message: "Anime episode updated in your watchlist!" });
   } catch (error) {
     res.json(error);
   }
