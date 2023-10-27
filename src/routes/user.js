@@ -44,7 +44,7 @@ router.put("/update/username", async (req, res) => {
   }
 });
 
-/*----------------update username--------------*/
+/*----------------update passsword--------------*/
 router.put("/update/password", async (req, res) => {
   const { userID, currentPassword, newPassword } = req.body;
   try {
@@ -62,6 +62,26 @@ router.put("/update/password", async (req, res) => {
 
     await user.save();
     return res.json({ message: "Password updated successfully!" });
+  } catch (error) {
+    res.json(error);
+  }
+});
+
+/*----------------Delete User--------------*/
+router.delete("/", async (req, res) => {
+  const { userID } = req.body;
+  try {
+    const user = await UserModel.findById(userID);
+
+    // check if user is not found
+    if (!user) {
+      return res.json({ message: "User not found!" });
+    }
+
+    // if found
+    await UserModel.findByIdAndDelete(userID);
+
+    return res.json({ message: "User successfully deleted!" });
   } catch (error) {
     res.json(error);
   }

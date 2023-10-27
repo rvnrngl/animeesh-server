@@ -85,7 +85,7 @@ router.put("/update", async (req, res) => {
   }
 });
 
-/*-------------------------Remove anime to User's watchlist----------------------------------*/
+/*-------------------------Delete anime to User's watchlist----------------------------------*/
 router.put("/remove", async (req, res) => {
   const { userID, animeID } = req.body;
   try {
